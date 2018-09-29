@@ -12,7 +12,7 @@ class App extends React.Component {
 
   componentDidMount() {
     const { loadCars } = this.props.actions;
-    // loadCars();
+    loadCars();
   }
 
   componentWillReceiveProps(nextProps) {
