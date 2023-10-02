@@ -1,0 +1,59 @@
+version: 2.1
+setup: true
+
+orbs:
+  continuation: circleci/continuation@0.5.0
+
+jobs:
+  job-only-main:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Display values
+          command: "echo job-only-main"
+
+
+  job-not-main:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Display values
+          command: "echo job-not-main"
+
+
+  job-on-tag:
+      docker:
+        - image: alpine
+      steps:
+        - run:
+            name: Display values
+            command: "echo job-not-main"
+
+workflows:
+  setup-workflow:
+    jobs:
+      - job-only-main:
+          filters:
+            branches:
+              only: main
+      - job-not-main:
+          filters:
+            branches:
+              ignore: main
+      - job-on-tag:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*$/
+            branches:
+              ignore: /.*/
+      - continuation/continue:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*$/
+          requires:
+            - job-not-main
+            - job-on-tag
+            - job-only-main
+          configuration_path: .circleci/continue-config.yml

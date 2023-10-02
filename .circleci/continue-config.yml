@@ -1,0 +1,28 @@
+version: 2.1
+
+parameters:
+  build:
+    type: boolean
+    default: false
+
+jobs:
+  module-a:
+    docker:
+      - image: alpine
+    steps:
+      - checkout
+      - run:
+          name: Display values
+          command: |
+            echo 'Branch: <<pipeline.git.branch>>'
+            echo 'Revision: <<pipeline.git.revision>>'
+            echo 'Trigger-source: <<pipeline.trigger_source>>'
+            echo 'Git-url: <<pipeline.project.git_url>>'
+            echo 'Id: <<pipeline.id>>'
+
+
+
+workflows:
+  workflow:
+    jobs:
+      - module-a
